@@ -6,6 +6,7 @@ beverly-crusher
 Image &copy; [aliceazzo](http://aliceazzo.deviantart.com/ "aliceazzo's deviant art page.").
 
 
+
 **compile**
 
 gcc main.c alsa.c -lasound -lm
