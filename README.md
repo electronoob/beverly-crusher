@@ -6,21 +6,21 @@ beverly-crusher
 Image &copy; [aliceazzo](http://aliceazzo.deviantart.com/ "aliceazzo's deviant art page.").
 
 
-
+beverly-crusher (build 27) [http://electronoob.com]
+===================================================
 Released under the terms of the MIT license.
-
 Copyright (c) 2014 electronoob.
-
 All rights reserved.
 
 
-*Syntax:*
+**Syntax**
 
-	**output file direct to alsa default device**
+	To output file direct to alsa default device:
 
 	./crusher --input mysing.raw --alsa
 
-	**output conversion to file**
+
+	To write conversion to file:
 
 	./crusher --input mysing.raw --output crushed.raw
 
