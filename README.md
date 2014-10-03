@@ -21,6 +21,10 @@ To write conversion to file:
 
 	./crusher --input mysing.raw --output crushed.raw
 
+To dump output to standard output:
+
+	./crusher --input mysing.raw --stdout
+
 
 **compile**
 
