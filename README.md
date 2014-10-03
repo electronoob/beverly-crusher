@@ -15,19 +15,19 @@ All rights reserved.
 
 **Syntax**
 
-	To output file direct to alsa default device:
+To output file direct to alsa default device:
 
 	./crusher --input mysing.raw --alsa
 
 
-	To write conversion to file:
+To write conversion to file:
 
 	./crusher --input mysing.raw --output crushed.raw
 
 
 **compile**
 
-gcc main.c alsa.c -lasound -lm
+	make clean && make all
 
 **about**
 
