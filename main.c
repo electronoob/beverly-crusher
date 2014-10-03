@@ -42,11 +42,13 @@ SOFTWARE.
 	void process (unsigned char mode)
 	{
 		unsigned char buf[BUFFER];
-		unsigned int i,j,k,err,offset,rawDataSize;
-		offset = 0;
+		unsigned int process_begun,i,j,k,err,offset,rawDataSize,obsample_bits, obsample_bytes;
+		offset = 0; process_begun = 0; obsample_bits = 0; obsample_bytes = 0;
+
 		rawDataSize = sizeof(rawData) / 2 / BUFFER;
+
 		if(mode == P_STDOUT) {
-			printf("unsigned char onebitraw[] = {\n0x00");
+			printf("prog_uchar onebitraw[] PROGMEM = {\n");
 		}
 	        for (i = 0; i < rawDataSize; ++i) {
                         for ( j = 0; j<BUFFER; j++) {
@@ -61,13 +63,12 @@ SOFTWARE.
 			if(mode == P_ALSA) {
 	                        if ((err = snd_pcm_writei (playback_handle, buf, BUFFER)) != BUFFER)
 					M_ALSA_ERR
-				printf(".");
-				fflush(stdout);
 			}
 			if(mode == P_STDOUT) {
 				/* get 8 bytes from buffer */
 				for ( j = 0; j<BUFFER; j=j+8) {
-					printf(", ");
+					if(process_begun) { printf(", "); } else { process_begun = 1; }
+					if(!(obsample_bytes % 15)) {printf("\n");}
 					/* move through those 8 bytes and convert to binary. 0x00 = 0, 0x255 = 1. */
 					unsigned char converted_bits;
 					converted_bits = 0;
@@ -79,16 +80,18 @@ SOFTWARE.
 						}
 						converted_bits = converted_bits << 1;
 						converted_bits = converted_bits + (buf[j+k] == 255);
+						obsample_bits++;
 					}
 					//printf("%s", dec2binstr[converted_bits]);
-					printf("0x%X",converted_bits);
+					printf("%#04X",converted_bits);
+					obsample_bytes++;
 				}
 			}
                 }
                 if(mode == P_STDOUT) {
-                        printf(" };\n");
-                }
-		printf("\n");
+                        printf("\n};\n");
+			printf("\n#define BC_BIT_COUNT %d\n#define BC_BYTE_COUNT %d\n",obsample_bits, obsample_bytes);
+		}
 	}
 	void showhelp() {
 		printf("example:\n");
