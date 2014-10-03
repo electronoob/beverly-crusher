@@ -26,7 +26,6 @@ SOFTWARE.
 */
 	#include <alsa/asoundlib.h>
         #define BITRATE 44100
-        #define BUFFER  1024
 	#define M_ALSA_ERR {fprintf (stderr, "ALSA Error: %s\n", snd_strerror (err)); exit (1);}
 
         snd_pcm_t *playback_handle;

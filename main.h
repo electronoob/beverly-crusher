@@ -24,13 +24,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+	enum { P_NONE, P_ALSA, P_FILE, P_STDOUT} process_mode = P_NONE;
+
         int output_to_alsa;
         int output_to_file;
+        int output_to_stdout;
         int input_from_file;
+
         char *dest_filename_buffer;
         char *src_filename_buffer;
 
-        void loop();
+        void process(unsigned char mode);
         void showhelp();
 	int main(int argc, char *argv[]);
+	/* buffer must be multiple of 8 for conversion of stream to binary representation */
+	#define BUFFER  1024
+
 #endif
