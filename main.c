@@ -45,10 +45,18 @@ SOFTWARE.
 		unsigned int process_begun,i,j,k,err,offset,rawDataSize,obsample_bits, obsample_bytes;
 		offset = 0; process_begun = 0; obsample_bits = 0; obsample_bytes = 0;
 
-		rawDataSize = sizeof(rawData) / 2 / BUFFER;
+		/*
+			rawDataSize = ((sizeof(rawData) / 2) /10 ) / BUFFER;
+			get length of byte stream. sizeof()
+			because I used a stereo example, reduce to mono. /2
+			I want to downsample the output by factor of 10. /10
+			reduce byte count to chunk count. /BUFFER
+		*/
+
+		rawDataSize = ((sizeof(rawData) / 2) /10 ) / BUFFER;
 
 		if(mode == P_STDOUT) {
-			printf("prog_uchar onebitraw[] PROGMEM = {\n");
+			printf("prog_uchar onebitraw[] PROGMEM = {");
 		}
 	        for (i = 0; i < rawDataSize; ++i) {
                         for ( j = 0; j<BUFFER; j++) {
@@ -57,8 +65,13 @@ SOFTWARE.
 				} else {
 					buf[j] = 0;
 				}
-				offset++;
-				offset++;
+				int z;
+				for(z=0;z<10;z++) {
+					/*
+						move playhead along by stereo*downsample_factor
+					*/
+					offset++; offset++;
+				}
                         }
 			if(mode == P_ALSA) {
 	                        if ((err = snd_pcm_writei (playback_handle, buf, BUFFER)) != BUFFER)

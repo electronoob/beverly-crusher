@@ -38,6 +38,6 @@ SOFTWARE.
         void showhelp();
 	int main(int argc, char *argv[]);
 	/* buffer must be multiple of 8 for conversion of stream to binary representation */
-	#define BUFFER  1024
+	#define BUFFER  256
 
 #endif
