@@ -1,13 +1,10 @@
-beverly-crusher
-===============
-
 ![Dr. Crusher portrait by aliceazzo.](http://www.electronoob.com/images/Beverly_Crusher_by_aliceazzo.jpg "The fantastic Beverly Crusher artwork is by aliceazzo and the link to her deviantart is http://aliceazzo.deviantart.com/ - This work is entirely hers and I havent asked permission to associate it with my application, website, nor have I even spoken to this person before so please keep in mind that this image is not part of the same license as this software.")
 
 Image &copy; [aliceazzo](http://aliceazzo.deviantart.com/ "aliceazzo's deviant art page.").
 
 
-beverly-crusher (build 27) [http://electronoob.com]
-===================================================
+beverly-crusher [http://electronoob.com]
+========================================
 Released under the terms of the MIT license.
 Copyright (c) 2014 electronoob.
 All rights reserved.
