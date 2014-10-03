@@ -30,6 +30,7 @@ SOFTWARE.
         char *dest_filename_buffer;
         char *src_filename_buffer;
 
+        void loop();
+        void showhelp();
 	int main(int argc, char *argv[]);
-	void loop();
 #endif

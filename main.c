@@ -54,9 +54,13 @@ SOFTWARE.
 					M_ALSA_ERR
                 }
 	}
+	void showhelp() {
+		printf("example:\n\n\t./crusher --input mysing.raw --alsa\n\nor\n\n\t./crusher --input mysing.raw --output crushed.raw\n\n");
+	}
 	int main (int argc, char *argv[])
 	{
-		printf("beverly-crusher (build %d): \n\nelectronoob.github.io\n",BUILDNUMBER);
+		printf("beverly-crusher (build %d) [http://electronoob.com]\n\n",BUILDNUMBER);
+		printf("Released under the terms of the MIT license.\nCopyright (c) 2014 electronoob.\nAll rights reserved.\n\n");
 	        output_to_alsa = 0;
         	output_to_file = 0;
 		input_from_file = 0;
@@ -74,6 +78,7 @@ SOFTWARE.
 			if (strcmp("--output", argv[i]) == 0) {
 				i++;
 				if(argc == i) {
+					showhelp();
 					fprintf (stderr, "--output [filename] error. missing filename parameter.\n");
 					exit(1);
 				}
@@ -90,6 +95,7 @@ SOFTWARE.
                         if (strcmp("--input", argv[i]) == 0) {
                                 i++;
                                 if(argc == i) {
+					showhelp();
                                         fprintf (stderr, "--input [filename] error. missing filename parameter.\n");
                                         exit(1);
                                 }
@@ -106,6 +112,7 @@ SOFTWARE.
 			fprintf (stderr, "warning argument '%s' unknown. rtfm.\n", argv[i]);
 		}
 		if(!input_from_file) {
+			showhelp();
 			fprintf (stderr, "error: --input not set.\n");
 			exit(1);
 		} else {
@@ -115,6 +122,7 @@ SOFTWARE.
 			printf("output filename is '%s'\n", dest_filename_buffer);
 		}
 		if (!(output_to_file | output_to_alsa)) {
+			showhelp();
 			fprintf (stderr, "error: at least one output mode required.\n");
 			exit(1);
 		}
