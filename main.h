@@ -24,6 +24,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-void main(int argc, char *argv[]);
-void loop();
+        int output_to_alsa;
+        int output_to_file;
+        int input_from_file;
+        char *dest_filename_buffer;
+        char *src_filename_buffer;
+
+	int main(int argc, char *argv[]);
+	void loop();
 #endif

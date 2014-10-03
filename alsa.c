@@ -27,26 +27,24 @@ SOFTWARE.
 	void initMyAlsa ()
 	{
 		int err;
-		if ((err = snd_pcm_open (&playback_handle, "default", SND_PCM_STREAM_PLAYBACK, 0)) < 0) {M_ALSA_ERR}
-		if ((err = snd_pcm_hw_params_malloc (&hw_params)) < 0) {M_ALSA_ERR}
-		if ((err = snd_pcm_hw_params_any (playback_handle, hw_params)) < 0) {M_ALSA_ERR}
-		if ((err = snd_pcm_hw_params_set_access (playback_handle, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED)) < 0) {M_ALSA_ERR}
-		if ((err = snd_pcm_hw_params_set_format (playback_handle, hw_params, SND_PCM_FORMAT_U8)) < 0) {M_ALSA_ERR}
 		unsigned int bitrate; bitrate = BITRATE;
-		if ((err = snd_pcm_hw_params_set_rate_near (playback_handle, hw_params, &bitrate, 0)) < 0) {M_ALSA_ERR}
-		if ((err = snd_pcm_hw_params_set_channels (playback_handle, hw_params, 1)) < 0) {M_ALSA_ERR}
-		if ((err = snd_pcm_hw_params (playback_handle, hw_params)) < 0) {M_ALSA_ERR}
+		if ((err = snd_pcm_open (&playback_handle, "default", SND_PCM_STREAM_PLAYBACK, 0)) < 0) M_ALSA_ERR
+		if ((err = snd_pcm_hw_params_malloc (&hw_params)) < 0) M_ALSA_ERR
+		if ((err = snd_pcm_hw_params_any (playback_handle, hw_params)) < 0) M_ALSA_ERR
+		if ((err = snd_pcm_hw_params_set_access (playback_handle, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED)) < 0) M_ALSA_ERR
+		if ((err = snd_pcm_hw_params_set_format (playback_handle, hw_params, SND_PCM_FORMAT_U8)) < 0) M_ALSA_ERR
+		if ((err = snd_pcm_hw_params_set_rate_near (playback_handle, hw_params, &bitrate, 0)) < 0) M_ALSA_ERR
+		if ((err = snd_pcm_hw_params_set_channels (playback_handle, hw_params, 1)) < 0) M_ALSA_ERR
+		if ((err = snd_pcm_hw_params (playback_handle, hw_params)) < 0) M_ALSA_ERR
 		snd_pcm_hw_params_free (hw_params);
-		if ((err = snd_pcm_prepare (playback_handle)) < 0) {M_ALSA_ERR}
+		if ((err = snd_pcm_prepare (playback_handle)) < 0) M_ALSA_ERR
 		snd_pcm_wait(playback_handle,5000);
 	}
 
 	void destroyMyAlsa ()
 	{
-		// let alsa playback complete samples before closing down
 		snd_pcm_nonblock(playback_handle, 0);
 		snd_pcm_drain(playback_handle);
 		snd_pcm_close (playback_handle);
-		exit (0);
 	}
 
