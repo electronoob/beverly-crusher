@@ -7,6 +7,24 @@ Image &copy; [aliceazzo](http://aliceazzo.deviantart.com/ "aliceazzo's deviant a
 
 
 
+Released under the terms of the MIT license.
+
+Copyright (c) 2014 electronoob.
+
+All rights reserved.
+
+
+*Syntax:*
+
+	**output file direct to alsa default device**
+
+	./crusher --input mysing.raw --alsa
+
+	**output conversion to file**
+
+	./crusher --input mysing.raw --output crushed.raw
+
+
 **compile**
 
 gcc main.c alsa.c -lasound -lm
