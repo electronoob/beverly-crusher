@@ -35,9 +35,11 @@ SOFTWARE.
 	int output_to_file;
 	int output_to_stdout;
 	int input_from_file;
+	int output_bitrate_divisor;
 
 	char *dest_filename_buffer;
 	char *src_filename_buffer;
+	char *set_bitrate_buffer;
 
 	void process (unsigned char mode)
 	{
@@ -52,9 +54,7 @@ SOFTWARE.
 			I want to downsample the output by factor of 10. /10
 			reduce byte count to chunk count. /BUFFER
 		*/
-
-		rawDataSize = ((sizeof(rawData) / 2) /10 ) / BUFFER;
-
+		rawDataSize = ((sizeof(rawData) / 2) / output_bitrate_divisor ) / BUFFER;
 		if(mode == P_STDOUT) {
 			printf("prog_uchar onebitraw[] PROGMEM = {");
 		}
@@ -66,7 +66,7 @@ SOFTWARE.
 					buf[j] = 0;
 				}
 				int z;
-				for(z=0;z<10;z++) {
+				for(z=0;z<output_bitrate_divisor;z++) {
 					/*
 						move playhead along by stereo*downsample_factor
 					*/
@@ -110,7 +110,8 @@ SOFTWARE.
 		printf("example:\n");
 		printf("\t./crusher --input mysing.raw --alsa\n");
 		printf("\t./crusher --input mysing.raw --stdout\n");
-		printf("\t./crusher --input mysing.raw --output crushed.raw\n\n");
+		printf("\t./crusher --input mysing.raw --output crushed.raw\n");
+		printf("\t./crusher --input mysing.raw --alsa --bitrate 2\n\n");
 	}
 	int main (int argc, char *argv[])
 	{
@@ -126,9 +127,11 @@ SOFTWARE.
         	output_to_file = 0;
 		output_to_stdout = 0;
 		input_from_file = 0;
+		output_bitrate_divisor = DEFAULT_BITRATE_DIVISOR;
 
 		dest_filename_buffer = NULL;
 		src_filename_buffer = NULL;
+		set_bitrate_buffer = NULL;
 
 		/* begin processing commandline */
 		int i;
@@ -176,6 +179,31 @@ SOFTWARE.
 				input_from_file = 1;
                                 continue;
                         }
+                        if (strcmp("--bitrate", argv[i]) == 0) {
+                                i++;
+                                if(argc == i) {
+					showhelp();
+                                        fprintf (stderr, "--bitrate [integer] error. missing division parameter.\n");
+                                        exit(1);
+                                }
+                                set_bitrate_buffer = malloc(strlen(argv[i]));
+                                if (set_bitrate_buffer == NULL)  {
+                                        fprintf (stderr, "--bitrate [integer] error. unable to malloc() memory.\n");
+                                        exit(1);
+                                }
+                                memset(set_bitrate_buffer, 0, strlen(argv[i]));
+                                strcpy(set_bitrate_buffer, argv[i]);
+				output_bitrate_divisor = atoi(set_bitrate_buffer);
+				if (output_bitrate_divisor == 0) {
+					fprintf (stderr, "--bitrate [integer] error. division by zero can be fatal.\n");
+					exit(1);
+				}
+				if (output_bitrate_divisor < 0) {
+					fprintf (stderr, "--bitrate [integer] error. sub-zero division parameter.\n");
+					exit(1);
+				}
+                                continue;
+                        }
 			fprintf (stderr, "warning argument '%s' unknown. rtfm.\n", argv[i]);
 		}
 		if(!input_from_file) {
@@ -183,10 +211,10 @@ SOFTWARE.
 			fprintf (stderr, "error: --input not set.\n");
 			exit(1);
 		} else {
-			printf("input filename is '%s'\n", src_filename_buffer);
+			//printf("input filename is '%s'\n", src_filename_buffer);
 		}
 		if(output_to_file) {
-			printf("output filename is '%s'\n", dest_filename_buffer);
+			//printf("output filename is '%s'\n", dest_filename_buffer);
 		}
 		if (!(output_to_file | output_to_alsa | output_to_stdout)) {
 			showhelp();
@@ -196,7 +224,7 @@ SOFTWARE.
 		/* end processing commandline */
 
 		if(output_to_alsa) {
-			initMyAlsa();
+			initMyAlsa(output_bitrate_divisor);
 			process(P_ALSA);
 			destroyMyAlsa();
 		}
@@ -209,5 +237,6 @@ SOFTWARE.
 
 		free(src_filename_buffer);
                 free(dest_filename_buffer);
+		free(set_bitrate_buffer);
 		return 0;
 	}

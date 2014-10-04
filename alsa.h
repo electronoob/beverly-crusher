@@ -25,12 +25,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 	#include <alsa/asoundlib.h>
-        #define BITRATE 4410
+        #define BITRATE 44100
 	#define M_ALSA_ERR {fprintf (stderr, "ALSA Error: %s\n", snd_strerror (err)); exit (1);}
 
         snd_pcm_t *playback_handle;
         snd_pcm_hw_params_t *hw_params;
 
-	void initMyAlsa ();
+	void initMyAlsa (int obd);
 	void destroyMyAlsa ();
 #endif

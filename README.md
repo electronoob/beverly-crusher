@@ -25,6 +25,11 @@ To dump output to standard output:
 
 	./crusher --input mysing.raw --stdout
 
+To set the output bitrate, enter a positive integer to divide the bitrate by:
+
+	./crusher --input mysing.raw --alsa --bitrate 2
+
+
 
 **compile**
 

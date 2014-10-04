@@ -24,10 +24,10 @@ SOFTWARE.
 */
 	#include "alsa.h"
 
-	void initMyAlsa ()
+	void initMyAlsa (int obd)
 	{
 		int err;
-		unsigned int bitrate; bitrate = BITRATE;
+		unsigned int bitrate; bitrate = BITRATE / obd;
 		if ((err = snd_pcm_open (&playback_handle, "default", SND_PCM_STREAM_PLAYBACK, 0)) < 0) M_ALSA_ERR
 		if ((err = snd_pcm_hw_params_malloc (&hw_params)) < 0) M_ALSA_ERR
 		if ((err = snd_pcm_hw_params_any (playback_handle, hw_params)) < 0) M_ALSA_ERR

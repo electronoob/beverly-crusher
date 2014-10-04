@@ -39,5 +39,5 @@ SOFTWARE.
 	int main(int argc, char *argv[]);
 	/* buffer must be multiple of 8 for conversion of stream to binary representation */
 	#define BUFFER  256
-
+	#define DEFAULT_BITRATE_DIVISOR 1
 #endif
