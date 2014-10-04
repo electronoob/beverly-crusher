@@ -54,13 +54,13 @@ SOFTWARE.
 			I want to downsample the output by factor of 10. /10
 			reduce byte count to chunk count. /BUFFER
 		*/
-		rawDataSize = ((sizeof(rawData) / 2) / output_bitrate_divisor ) / BUFFER;
+		rawDataSize = ((sizeof(rawData)) / output_bitrate_divisor ) / BUFFER;
 		if(mode == P_STDOUT) {
 			printf("prog_uchar onebitraw[] PROGMEM = {");
 		}
 	        for (i = 0; i < rawDataSize; ++i) {
                         for ( j = 0; j<BUFFER; j++) {
-				if (rawData[offset]>100) {
+				if (rawData[offset]>128) {
 					buf[j] = 255;
 				} else {
 					buf[j] = 0;
@@ -69,8 +69,9 @@ SOFTWARE.
 				for(z=0;z<output_bitrate_divisor;z++) {
 					/*
 						move playhead along by stereo*downsample_factor
+					offset++;offset++;
 					*/
-					offset++; offset++;
+					offset++;
 				}
                         }
 			if(mode == P_ALSA) {

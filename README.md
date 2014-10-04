@@ -35,12 +35,11 @@ To set the output bitrate, enter a positive integer to divide the bitrate by:
 
 	make clean && make all
 
+
 **about**
 
-i wanted a tool for crushing audio data for use with a microcontroller but i couldn't find one; so i'm writing one.
-
-
-the idea is very simple actually.
-
-right now the code is incomplete and is very early days of development, it can take a RAW audio data and play it back crushed to 1bit. 
+I had been looking for a tool to convert audio down to 1-bit depth
+but struggled to find one, so I'm writing one which can also do
+other neat stuff such as preview with ALSA and downsample the
+bitrate easily.
 
