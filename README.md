@@ -43,3 +43,5 @@ but struggled to find one, so I'm writing one which can also do
 other neat stuff such as preview with ALSA and downsample the
 bitrate easily.
 
+[![Demo and project information.](http://img.youtube.com/vi/U2mQjJXUQ4k/0.jpg)](http://www.youtube.com/watch?v=U2mQjJXUQ4k)
+
