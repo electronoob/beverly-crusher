@@ -24,20 +24,29 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+	/* buffer must be multiple of 8 for conversion of stream to binary representation */
+	#define BUFFER  256
+	#define DEFAULT_BITRATE_DIVISOR 1
+        #define TMPF_BUFFER_SIZE 1024
+
 	enum { P_NONE, P_ALSA, P_FILE, P_STDOUT} process_mode = P_NONE;
 
         int output_to_alsa;
         int output_to_file;
         int output_to_stdout;
         int input_from_file;
+        int output_bitrate_divisor;
 
         char *dest_filename_buffer;
         char *src_filename_buffer;
+        char *set_bitrate_buffer;
 
+        unsigned char *rawData;
+        unsigned int rawData_len;
+
+        unsigned char *import_file(char *file);
         void process(unsigned char mode);
         void showhelp();
 	int main(int argc, char *argv[]);
-	/* buffer must be multiple of 8 for conversion of stream to binary representation */
-	#define BUFFER  256
-	#define DEFAULT_BITRATE_DIVISOR 1
+
 #endif

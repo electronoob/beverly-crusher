@@ -24,8 +24,9 @@ SOFTWARE.
 */
 	#include <stdio.h>
 	#include <stdlib.h>
+        #include <unistd.h>
+        #include <string.h>
 	#include "main.h"
-	#include "sample.h"
 	#include "alsa.h"
 	/* http://buildnumber.sourceforge.net/ */
 	#include "buildnumber.h"
@@ -41,20 +42,56 @@ SOFTWARE.
 	char *src_filename_buffer;
 	char *set_bitrate_buffer;
 
+	unsigned char *rawData;
+	unsigned int rawData_len;
+
+        unsigned char *import_file(char *file) {
+                FILE *input;
+                input = fopen(file, "rb");
+                if (input == NULL) {
+                        fprintf(stderr, "Unable to open file for reading.\n");
+                        exit(1);
+                }
+                unsigned int bytes;
+                unsigned int the_file_len = 0;
+		unsigned char *the_file_data;
+                unsigned char *tmp_buffer;
+                unsigned char *tmp_ptr;
+                tmp_ptr = NULL;
+                tmp_buffer = malloc(TMPF_BUFFER_SIZE);
+		the_file_data = malloc(TMPF_BUFFER_SIZE);
+                memset(the_file_data, 0, TMPF_BUFFER_SIZE);
+		while (1) {
+                    memset(tmp_buffer, 0, TMPF_BUFFER_SIZE);
+                    bytes = fread (tmp_buffer, 1, TMPF_BUFFER_SIZE, input);
+                    if(bytes == 0) { break; }
+                    if ( (tmp_ptr = realloc(the_file_data, the_file_len+bytes)) == NULL ) {
+                        fprintf(stderr, "Unable to realloc().\n");
+                        exit(1);
+                    } else {
+                        the_file_data = tmp_ptr;
+                        memcpy(the_file_data + the_file_len, tmp_buffer, bytes);
+                    }
+                    the_file_len += bytes;
+                    if(bytes != TMPF_BUFFER_SIZE) {
+                        break;
+                    }
+		}
+
+		rawData_len = the_file_len;
+                free(tmp_buffer);
+                fclose(input);
+		return the_file_data;
+        }
+
 	void process (unsigned char mode)
 	{
 		unsigned char buf[BUFFER];
 		unsigned int process_begun,i,j,k,err,offset,rawDataSize,obsample_bits, obsample_bytes;
 		offset = 0; process_begun = 0; obsample_bits = 0; obsample_bytes = 0;
 
-		/*
-			rawDataSize = ((sizeof(rawData) / 2) /10 ) / BUFFER;
-			get length of byte stream. sizeof()
-			because I used a stereo example, reduce to mono. /2
-			I want to downsample the output by factor of 10. /10
-			reduce byte count to chunk count. /BUFFER
-		*/
-		rawDataSize = ((sizeof(rawData)) / output_bitrate_divisor ) / BUFFER;
+		rawDataSize = rawData_len / output_bitrate_divisor / BUFFER;
+
 		if(mode == P_STDOUT) {
 			printf("prog_uchar onebitraw[] PROGMEM = {");
 		}
@@ -67,10 +104,6 @@ SOFTWARE.
 				}
 				int z;
 				for(z=0;z<output_bitrate_divisor;z++) {
-					/*
-						move playhead along by stereo*downsample_factor
-					offset++;offset++;
-					*/
 					offset++;
 				}
                         }
@@ -96,7 +129,6 @@ SOFTWARE.
 						converted_bits = converted_bits + (buf[j+k] == 255);
 						obsample_bits++;
 					}
-					//printf("%s", dec2binstr[converted_bits]);
 					printf("%#04X",converted_bits);
 					obsample_bytes++;
 				}
@@ -153,12 +185,12 @@ SOFTWARE.
 					fprintf (stderr, "--output [filename] error. missing filename parameter.\n");
 					exit(1);
 				}
-				dest_filename_buffer = malloc(strlen(argv[i]));
+				dest_filename_buffer = malloc(strlen(argv[i]) +1);
 				if (dest_filename_buffer == NULL)  {
 					fprintf (stderr, "--output [filename] error. unable to malloc() memory.\n");
 					exit(1);
 				}
-				memset(dest_filename_buffer, 0, strlen(argv[i]));
+				memset(dest_filename_buffer, 0, strlen(argv[i]) +1);
 				strcpy(dest_filename_buffer, argv[i]);
 				output_to_file = 1;
 				continue;
@@ -170,12 +202,12 @@ SOFTWARE.
                                         fprintf (stderr, "--input [filename] error. missing filename parameter.\n");
                                         exit(1);
                                 }
-                                src_filename_buffer = malloc(strlen(argv[i]));
+                                src_filename_buffer = malloc(strlen(argv[i]) +1);
                                 if (src_filename_buffer == NULL)  {
                                         fprintf (stderr, "--input [filename] error. unable to malloc() memory.\n");
                                         exit(1);
                                 }
-                                memset(src_filename_buffer, 0, strlen(argv[i]));
+                                memset(src_filename_buffer, 0, strlen(argv[i]) +1);
                                 strcpy(src_filename_buffer, argv[i]);
 				input_from_file = 1;
                                 continue;
@@ -187,12 +219,12 @@ SOFTWARE.
                                         fprintf (stderr, "--bitrate [integer] error. missing division parameter.\n");
                                         exit(1);
                                 }
-                                set_bitrate_buffer = malloc(strlen(argv[i]));
+                                set_bitrate_buffer = malloc(strlen(argv[i]) +1);
                                 if (set_bitrate_buffer == NULL)  {
                                         fprintf (stderr, "--bitrate [integer] error. unable to malloc() memory.\n");
                                         exit(1);
                                 }
-                                memset(set_bitrate_buffer, 0, strlen(argv[i]));
+                                memset(set_bitrate_buffer, 0, strlen(argv[i]) +1);
                                 strcpy(set_bitrate_buffer, argv[i]);
 				output_bitrate_divisor = atoi(set_bitrate_buffer);
 				if (output_bitrate_divisor == 0) {
@@ -212,10 +244,10 @@ SOFTWARE.
 			fprintf (stderr, "error: --input not set.\n");
 			exit(1);
 		} else {
-			//printf("input filename is '%s'\n", src_filename_buffer);
+			printf("input filename is '%s'\n", src_filename_buffer);
 		}
 		if(output_to_file) {
-			//printf("output filename is '%s'\n", dest_filename_buffer);
+			printf("output filename is '%s', however this feature isn't written yet.\n", dest_filename_buffer);
 		}
 		if (!(output_to_file | output_to_alsa | output_to_stdout)) {
 			showhelp();
@@ -223,6 +255,8 @@ SOFTWARE.
 			exit(1);
 		}
 		/* end processing commandline */
+
+		rawData = import_file(src_filename_buffer);
 
 		if(output_to_alsa) {
 			initMyAlsa(output_bitrate_divisor);
@@ -239,5 +273,6 @@ SOFTWARE.
 		free(src_filename_buffer);
                 free(dest_filename_buffer);
 		free(set_bitrate_buffer);
+		free(rawData);
 		return 0;
 	}
