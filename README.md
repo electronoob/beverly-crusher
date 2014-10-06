@@ -44,7 +44,7 @@ other neat stuff such as preview with ALSA and downsample the
 bitrate easily.
 
 
-Hackaday.io [project page here](https://hackaday.io/project/3119-Beverly-Crusher%3A-bit-crushing-toy-for-1-bit-audio. "project page here").
+Instructables [project page here](http://www.instructables.com/id/Beverly-Crusher-bit-crushing-1-bit-Arduino-music/ "Instructables").
 
 
 [![Demo and project information.](http://img.youtube.com/vi/U2mQjJXUQ4k/0.jpg)](http://www.youtube.com/watch?v=U2mQjJXUQ4k)
