@@ -17,13 +17,13 @@ To output file direct to alsa default device:
 	./crusher --input mysing.raw --alsa
 
 
-To write conversion to file:
+To write conversion to file (this bit isnt written yet):
 
 	./crusher --input mysing.raw --output crushed.raw
 
-To dump output to standard output:
+To generate Arduino sketch:
 
-	./crusher --input mysing.raw --stdout
+	./crusher --input mysing.raw --arduino --bitrate 10 > arduino_sketch.c
 
 To set the output bitrate, enter a positive integer to divide the bitrate by:
 

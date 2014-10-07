@@ -93,7 +93,7 @@ SOFTWARE.
 		rawDataSize = rawData_len / output_bitrate_divisor / BUFFER;
 
 		if(mode == P_STDOUT) {
-			printf("prog_uchar onebitraw[] PROGMEM = {");
+			printf("\n#include <arduino.h>\n#include <avr/pgmspace.h>\nprog_uchar onebitraw[] PROGMEM = {");
 		}
 	        for (i = 0; i < rawDataSize; ++i) {
                         for ( j = 0; j<BUFFER; j++) {
@@ -129,7 +129,7 @@ SOFTWARE.
 						converted_bits = converted_bits + (buf[j+k] == 255);
 						obsample_bits++;
 					}
-					printf("%#04X",converted_bits);
+					printf("0x%02X",converted_bits);
 					obsample_bytes++;
 				}
 			}
@@ -137,21 +137,49 @@ SOFTWARE.
                 if(mode == P_STDOUT) {
                         printf("\n};\n");
 			printf("\n#define BC_BIT_COUNT %d\n#define BC_BYTE_COUNT %d\n",obsample_bits, obsample_bytes);
+printf("\
+#define SPK_PIN 5\n\
+\n\
+void setup(){ pinMode(SPK_PIN, OUTPUT); }\n\
+\n\
+void loop(){\n\
+        unsigned char bite; int col; col = 0; int i;\n\
+        for(i=0;i<BC_BYTE_COUNT;i++){\n\
+          bite = pgm_read_byte_near(onebitraw + i);\n\
+          unsigned char mask = 1; unsigned char copy = bite; int z;\n\
+          for (z=0;z<8;z++) {\n\
+            digitalWrite(SPK_PIN, copy & mask);\n\
+            copy = copy >> 1;\n\
+            delayMicroseconds(%u);\n\
+          }\n\
+        }\n\
+}\n", 27 * output_bitrate_divisor);
+
+
 		}
 	}
 	void showhelp() {
 		printf("example:\n");
 		printf("\t./crusher --input mysing.raw --alsa\n");
-		printf("\t./crusher --input mysing.raw --stdout\n");
+		printf("\t./crusher --input mysing.raw --arduino --bitrate 10 > arduino_sketch.c\n");
 		printf("\t./crusher --input mysing.raw --output crushed.raw\n");
 		printf("\t./crusher --input mysing.raw --alsa --bitrate 2\n\n");
 	}
+	void showabout() {
+		/* will need to rename that global to output_to_arduino soon */
+		if (output_to_stdout == 1){
+			printf("/*\n\n");
+		}
+                printf("beverly-crusher (build %d) [http://electronoob.com]\n\n",BUILDNUMBER);
+                printf("Released under the terms of the MIT license.\nCopyright (c) 2014 electronoob.\nAll rights reserved.\n\n");
+		if (output_to_stdout == 1){
+			printf("*/\n\n");
+		}
+	}
 	int main (int argc, char *argv[])
 	{
-		printf("beverly-crusher (build %d) [http://electronoob.com]\n\n",BUILDNUMBER);
-		printf("Released under the terms of the MIT license.\nCopyright (c) 2014 electronoob.\nAll rights reserved.\n\n");
-
 		if((BUFFER % 8) != 0) {
+			showabout();
 			fprintf (stderr, "Critical error: the buffer size (BUFFER) must be a multiple of 8. please fix and recompile me.\n");
 			exit(1);
 		}
@@ -170,7 +198,7 @@ SOFTWARE.
 		int i;
 		for (i=1;i<argc;i++)
 		{
-			if (strcmp("--stdout", argv[i]) == 0) {
+			if (strcmp("--arduino", argv[i]) == 0) {
                                 output_to_stdout = 1;
                                 continue;
                         }
@@ -181,12 +209,14 @@ SOFTWARE.
 			if (strcmp("--output", argv[i]) == 0) {
 				i++;
 				if(argc == i) {
+					showabout();
 					showhelp();
 					fprintf (stderr, "--output [filename] error. missing filename parameter.\n");
 					exit(1);
 				}
 				dest_filename_buffer = malloc(strlen(argv[i]) +1);
 				if (dest_filename_buffer == NULL)  {
+					showabout();
 					fprintf (stderr, "--output [filename] error. unable to malloc() memory.\n");
 					exit(1);
 				}
@@ -198,12 +228,14 @@ SOFTWARE.
                         if (strcmp("--input", argv[i]) == 0) {
                                 i++;
                                 if(argc == i) {
+					showabout();
 					showhelp();
                                         fprintf (stderr, "--input [filename] error. missing filename parameter.\n");
                                         exit(1);
                                 }
                                 src_filename_buffer = malloc(strlen(argv[i]) +1);
                                 if (src_filename_buffer == NULL)  {
+					showabout();
                                         fprintf (stderr, "--input [filename] error. unable to malloc() memory.\n");
                                         exit(1);
                                 }
@@ -215,12 +247,14 @@ SOFTWARE.
                         if (strcmp("--bitrate", argv[i]) == 0) {
                                 i++;
                                 if(argc == i) {
+					showabout();
 					showhelp();
                                         fprintf (stderr, "--bitrate [integer] error. missing division parameter.\n");
                                         exit(1);
                                 }
                                 set_bitrate_buffer = malloc(strlen(argv[i]) +1);
                                 if (set_bitrate_buffer == NULL)  {
+					showabout();
                                         fprintf (stderr, "--bitrate [integer] error. unable to malloc() memory.\n");
                                         exit(1);
                                 }
@@ -228,10 +262,12 @@ SOFTWARE.
                                 strcpy(set_bitrate_buffer, argv[i]);
 				output_bitrate_divisor = atoi(set_bitrate_buffer);
 				if (output_bitrate_divisor == 0) {
+					showabout();
 					fprintf (stderr, "--bitrate [integer] error. division by zero can be fatal.\n");
 					exit(1);
 				}
 				if (output_bitrate_divisor < 0) {
+					showabout();
 					fprintf (stderr, "--bitrate [integer] error. sub-zero division parameter.\n");
 					exit(1);
 				}
@@ -240,21 +276,25 @@ SOFTWARE.
 			fprintf (stderr, "warning argument '%s' unknown. rtfm.\n", argv[i]);
 		}
 		if(!input_from_file) {
+			showabout();
 			showhelp();
 			fprintf (stderr, "error: --input not set.\n");
 			exit(1);
 		} else {
-			printf("input filename is '%s'\n", src_filename_buffer);
+			//printf("input filename is '%s'\n", src_filename_buffer);
 		}
 		if(output_to_file) {
-			printf("output filename is '%s', however this feature isn't written yet.\n", dest_filename_buffer);
+			//printf("output filename is '%s', however this feature isn't written yet.\n", dest_filename_buffer);
 		}
 		if (!(output_to_file | output_to_alsa | output_to_stdout)) {
+			showabout();
 			showhelp();
-			fprintf (stderr, "error: at least one output mode required. --alsa --stdout --output filename.\n");
+			fprintf (stderr, "error: at least one output mode required. --alsa --arduino --output filename.\n");
 			exit(1);
 		}
 		/* end processing commandline */
+
+		showabout();
 
 		rawData = import_file(src_filename_buffer);
 
