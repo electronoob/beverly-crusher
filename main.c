@@ -153,7 +153,7 @@ void loop(){\n\
             delayMicroseconds(%u);\n\
           }\n\
         }\n\
-}\n", 27 * output_bitrate_divisor);
+}\n", (unsigned int) ((1000000 / 44100) * output_bitrate_divisor));
 
 
 		}
