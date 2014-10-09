@@ -25,7 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 	/* buffer must be multiple of 8 for conversion of stream to binary representation */
-	#define BUFFER  256
+	#define BUFFER  2048
 	#define DEFAULT_BITRATE_DIVISOR 1
         #define TMPF_BUFFER_SIZE 1024
 

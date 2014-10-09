@@ -25,7 +25,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 	#include <alsa/asoundlib.h>
-        #define BITRATE 44100
+
+        #define ALSA_BITRATE 44100
+	#define ALSA_BUFFER_SIZE 20480
+	#define ALSA_PERIOD_SIZE 5120
+
 	#define M_ALSA_ERR {fprintf (stderr, "ALSA Error: %s\n", snd_strerror (err)); exit (1);}
 
         snd_pcm_t *playback_handle;

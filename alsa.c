@@ -27,7 +27,7 @@ SOFTWARE.
 	void initMyAlsa (int obd)
 	{
 		int err;
-		unsigned int bitrate; bitrate = BITRATE / obd;
+		unsigned int bitrate; bitrate = ALSA_BITRATE / obd;
 		if ((err = snd_pcm_open (&playback_handle, "default", SND_PCM_STREAM_PLAYBACK, 0)) < 0) M_ALSA_ERR
 		if ((err = snd_pcm_hw_params_malloc (&hw_params)) < 0) M_ALSA_ERR
 		if ((err = snd_pcm_hw_params_any (playback_handle, hw_params)) < 0) M_ALSA_ERR
@@ -35,10 +35,14 @@ SOFTWARE.
 		if ((err = snd_pcm_hw_params_set_format (playback_handle, hw_params, SND_PCM_FORMAT_U8)) < 0) M_ALSA_ERR
 		if ((err = snd_pcm_hw_params_set_rate_near (playback_handle, hw_params, &bitrate, 0)) < 0) M_ALSA_ERR
 		if ((err = snd_pcm_hw_params_set_channels (playback_handle, hw_params, 1)) < 0) M_ALSA_ERR
+		snd_pcm_uframes_t buffer_size = ALSA_BUFFER_SIZE; snd_pcm_uframes_t period_size = ALSA_PERIOD_SIZE;
+		if ((err = snd_pcm_hw_params_set_buffer_size_near (playback_handle, hw_params, &buffer_size)) < 0) M_ALSA_ERR
+		if ((err = snd_pcm_hw_params_set_period_size_near (playback_handle, hw_params, &period_size, NULL)) < 0) M_ALSA_ERR
 		if ((err = snd_pcm_hw_params (playback_handle, hw_params)) < 0) M_ALSA_ERR
 		snd_pcm_hw_params_free (hw_params);
 		if ((err = snd_pcm_prepare (playback_handle)) < 0) M_ALSA_ERR
 		snd_pcm_wait(playback_handle,5000);
+		snd_pcm_nonblock(playback_handle, 0);
 	}
 
 	void destroyMyAlsa ()

@@ -87,15 +87,14 @@ SOFTWARE.
 	void process (unsigned char mode)
 	{
 		unsigned char buf[BUFFER];
-		unsigned int process_begun,i,j,k,err,offset,rawDataSize,obsample_bits, obsample_bytes;
+		unsigned int process_begun,j,k,err,offset,obsample_bits, obsample_bytes;
 		offset = 0; process_begun = 0; obsample_bits = 0; obsample_bytes = 0;
-
-		rawDataSize = rawData_len / output_bitrate_divisor / BUFFER;
 
 		if(mode == P_STDOUT) {
 			printf("\n#include <arduino.h>\n#include <avr/pgmspace.h>\nprog_uchar onebitraw[] PROGMEM = {");
 		}
-	        for (i = 0; i < rawDataSize; ++i) {
+		while (offset != -1) {
+			memset(buf, 0, BUFFER);
                         for ( j = 0; j<BUFFER; j++) {
 				if (rawData[offset]>128) {
 					buf[j] = 255;
@@ -105,13 +104,18 @@ SOFTWARE.
 				int z;
 				for(z=0;z<output_bitrate_divisor;z++) {
 					offset++;
+	                                if(offset > rawData_len) {
+        	                                offset = -1;
+						goto end_of_src_samples;
+                	                }
 				}
                         }
+end_of_src_samples:
 			if(mode == P_ALSA) {
 	                        if ((err = snd_pcm_writei (playback_handle, buf, BUFFER)) != BUFFER)
 					M_ALSA_ERR
 			}
-			if(mode == P_STDOUT) {
+			if(mode == P_STDOUT+99) {
 				/* get 8 bytes from buffer */
 				for ( j = 0; j<BUFFER; j=j+8) {
 					if(process_begun) { printf(", "); } else { process_begun = 1; }

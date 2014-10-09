@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall
+CFLAGS=-g -Wall
 LDFLAGS=-lasound
 BN=./buildnumber
 
