@@ -115,7 +115,7 @@ end_of_src_samples:
 	                        if ((err = snd_pcm_writei (playback_handle, buf, BUFFER)) != BUFFER)
 					M_ALSA_ERR
 			}
-			if(mode == P_STDOUT+99) {
+			if(mode == P_STDOUT) {
 				/* get 8 bytes from buffer */
 				for ( j = 0; j<BUFFER; j=j+8) {
 					if(process_begun) { printf(", "); } else { process_begun = 1; }
