@@ -1,4 +1,4 @@
-![Dr. Crusher portrait by aliceazzo.](//hackadaycom.files.wordpress.com/2014/10/9132521412537668507.jpg "The fantastic Beverly Crusher artwork is by aliceazzo and the link to her deviantart is http://aliceazzo.deviantart.com/ - This work is entirely hers and I havent asked permission to associate it with my application, website, nor have I even spoken to this person before so please keep in mind that this image is not part of the same license as this software.")
+![Dr. Crusher portrait by aliceazzo.](https://hackadaycom.files.wordpress.com/2014/10/9132521412537668507.jpg "The fantastic Beverly Crusher artwork is by aliceazzo and the link to her deviantart is http://aliceazzo.deviantart.com/ - This work is entirely hers and I havent asked permission to associate it with my application, website, nor have I even spoken to this person before so please keep in mind that this image is not part of the same license as this software.")
 
 Image &copy; [aliceazzo](http://aliceazzo.deviantart.com/ "aliceazzo's deviant art page.") [http://aliceazzo.deviantart.com/].
 
