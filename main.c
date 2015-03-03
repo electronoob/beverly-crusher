@@ -24,8 +24,8 @@ SOFTWARE.
 */
 	#include <stdio.h>
 	#include <stdlib.h>
-        #include <unistd.h>
-        #include <string.h>
+    #include <unistd.h>
+    #include <string.h>
 	#include "main.h"
 	#include "alsa.h"
 	/* http://buildnumber.sourceforge.net/ */
@@ -37,9 +37,6 @@ SOFTWARE.
 	int output_to_stdout;
 	int input_from_file;
 	int output_bitrate_divisor;
-
-	char *dest_filename_buffer;
-	char *src_filename_buffer;
 	char *set_bitrate_buffer;
 
 	unsigned char *rawData;
@@ -166,7 +163,6 @@ void loop(){\n\
 		printf("example:\n");
 		printf("\t./crusher --input mysing.raw --alsa\n");
 		printf("\t./crusher --input mysing.raw --arduino --bitrate 10 > arduino_sketch.c\n");
-		printf("\t./crusher --input mysing.raw --output crushed.raw\n");
 		printf("\t./crusher --input mysing.raw --alsa --bitrate 2\n\n");
 	}
 	void showabout() {
@@ -194,7 +190,6 @@ void loop(){\n\
 		input_from_file = 0;
 		output_bitrate_divisor = DEFAULT_BITRATE_DIVISOR;
 
-		dest_filename_buffer = NULL;
 		src_filename_buffer = NULL;
 		set_bitrate_buffer = NULL;
 
@@ -208,25 +203,6 @@ void loop(){\n\
                         }
 			if (strcmp("--alsa", argv[i]) == 0) {
 				output_to_alsa = 1;
-				continue;
-			}
-			if (strcmp("--output", argv[i]) == 0) {
-				i++;
-				if(argc == i) {
-					showabout();
-					showhelp();
-					fprintf (stderr, "--output [filename] error. missing filename parameter.\n");
-					exit(1);
-				}
-				dest_filename_buffer = malloc(strlen(argv[i]) +1);
-				if (dest_filename_buffer == NULL)  {
-					showabout();
-					fprintf (stderr, "--output [filename] error. unable to malloc() memory.\n");
-					exit(1);
-				}
-				memset(dest_filename_buffer, 0, strlen(argv[i]) +1);
-				strcpy(dest_filename_buffer, argv[i]);
-				output_to_file = 1;
 				continue;
 			}
                         if (strcmp("--input", argv[i]) == 0) {
@@ -287,13 +263,10 @@ void loop(){\n\
 		} else {
 			//printf("input filename is '%s'\n", src_filename_buffer);
 		}
-		if(output_to_file) {
-			//printf("output filename is '%s', however this feature isn't written yet.\n", dest_filename_buffer);
-		}
-		if (!(output_to_file | output_to_alsa | output_to_stdout)) {
+		if (!(output_to_alsa | output_to_stdout)) {
 			showabout();
 			showhelp();
-			fprintf (stderr, "error: at least one output mode required. --alsa --arduino --output filename.\n");
+			fprintf (stderr, "error: at least one output mode required. --alsa or --arduino.\n");
 			exit(1);
 		}
 		/* end processing commandline */
@@ -307,15 +280,12 @@ void loop(){\n\
 			process(P_ALSA);
 			destroyMyAlsa();
 		}
-		if(output_to_file) {
-			process(P_FILE);
-		}
+
                 if(output_to_stdout) {
                         process(P_STDOUT);
                 }
 
 		free(src_filename_buffer);
-                free(dest_filename_buffer);
 		free(set_bitrate_buffer);
 		free(rawData);
 		return 0;

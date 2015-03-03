@@ -9,17 +9,13 @@ Released under the terms of the MIT license.
 Copyright (c) 2014 electronoob.
 All rights reserved.
 
+I consider this program to be feature complete and finished (as of build #269).
 
 **Syntax**
 
 To output file direct to alsa default device:
 
 	./crusher --input mysing.raw --alsa
-
-
-To write conversion to file (this bit isnt written yet):
-
-	./crusher --input mysing.raw --output crushed.raw
 
 To generate Arduino sketch:
 
@@ -49,3 +45,5 @@ Instructables [project page here](http://www.instructables.com/id/Beverly-Crushe
 
 [![Demo and project information.](http://img.youtube.com/vi/U2mQjJXUQ4k/0.jpg)](http://www.youtube.com/watch?v=U2mQjJXUQ4k)
 
+
+[![Remixing in C demo.](http://img.youtube.com/vi/jrQg8p99Lag/0.jpg)](http://www.youtube.com/watch?v=jrQg8p99Lag)

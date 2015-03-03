@@ -29,15 +29,13 @@ SOFTWARE.
 	#define DEFAULT_BITRATE_DIVISOR 1
         #define TMPF_BUFFER_SIZE 1024
 
-	enum { P_NONE, P_ALSA, P_FILE, P_STDOUT} process_mode = P_NONE;
+	enum { P_NONE, P_ALSA, P_STDOUT} process_mode = P_NONE;
 
         int output_to_alsa;
-        int output_to_file;
         int output_to_stdout;
         int input_from_file;
         int output_bitrate_divisor;
 
-        char *dest_filename_buffer;
         char *src_filename_buffer;
         char *set_bitrate_buffer;
 
